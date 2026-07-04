@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vishal Ansari — Data Architect & Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0B1929;
+    --ink-2: #0F2236;
+    --ink-3: #142B43;
+    --line: #21384F;
+    --line-soft: #1A2E45;
+    --paper: #F5F3EC;
+    --paper-dim: #C7C9C2;
+    --paper-faint: #8F9AA8;
+    --amber: #F0A33C;
+    --amber-soft: rgba(240,163,60,0.2);
+    --teal: #2DD4BF;
+    --teal-soft: rgba(45,212,191,0.15);
+    --purple: #A78BFA;
+    --purple-soft: rgba(167,139,250,0.12);
+    --purple-glow: rgba(167,139,250,0.25);
+    --rose: #E8694A;
+    --radius: 10px;
+    --serif: 'Fraunces', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    .cursor-dot, .cursor-ring { display: none !important; }
+  }
+
+  body {
+    font-family: var(--sans); background: var(--ink); color: var(--paper);
+    font-size: 15px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+
+  /* ========== AMBIENT ORBS ========== */
+  .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(120px); will-change: transform; }
+  .orb-1 { width: 500px; height: 500px; background: var(--teal); opacity: 0.04; top: -10%; left: -8%; animation: orbF1 22s ease-in-out infinite; }
+  .orb-2 { width: 400px; height: 400px; background: var(--purple); opacity: 0.035; bottom: 10%; right: -5%; animation: orbF2 28s ease-in-out infinite; }
+  .orb-3 { width: 300px; height: 300px; background: var(--amber); opacity: 0.03; top: 40%; left: 30%; animation: orbF3 18s ease-in-out infinite; }
+  @keyframes orbF1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(60px,50px)} }
+  @keyframes orbF2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,-60px)} }
+  @keyframes orbF3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,40px)} }
+
+  /* ========== CUSTOM CURSOR ========== */
+  .cursor-dot, .cursor-ring {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+    border-radius: 50%; transform: translate(-50%, -50%);
+    transition: width 0.25s, height 0.25s, background 0.25s, border-color 0.25s;
+  }
+  .cursor-dot { width: 6px; height: 6px; background: var(--amber); }
+  .cursor-ring { width: 36px; height: 36px; border: 1.5px solid rgba(240,163,60,0.35); background: transparent; }
+  .cursor-dot.is-hover { background: var(--purple); }
+  .cursor-ring.is-hover { width: 56px; height: 56px; border-color: rgba(167,139,250,0.3); }
+  @media (hover: none) and (pointer: coarse) { .cursor-dot, .cursor-ring { display: none !important; } }
+
+  a { color: inherit; }
+  ::selection { background: var(--amber); color: var(--ink); }
+
+  /* ========== SPINE ========== */
+  .spine { position: fixed; left: 28px; top: 0; bottom: 0; width: 2px; background: var(--line-soft); z-index: 5; display: none; }
+  .spine-fill { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(to bottom, var(--teal), var(--purple), var(--amber)); transition: height 0.1s linear; }
+  @media (min-width: 1180px) { .spine { display: block; } }
+
+  /* ========== NAV ========== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(11,25,41,0.82); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line-soft);
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px;
+  }
+  .nav-brand {
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    color: var(--paper); letter-spacing: 0.01em; text-decoration: none;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .nav-brand .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-soft); animation: blink 2.6s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 11.5px; color: var(--paper-faint);
+    text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+    transition: color 0.15s; position: relative; padding-bottom: 3px;
+  }
+  .nav-links a::after { content:''; position: absolute; bottom: -2px; left: 0; width: 0%; height: 1px; background: var(--amber); transition: width 0.2s; }
+  .nav-links a:hover { color: var(--paper); }
+  .nav-links a:hover::after, .nav-links a.is-active::after { width: 100%; }
+  .nav-links a.is-active { color: var(--amber); }
+
+  .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 28px; height: 28px; background: none; border: none; cursor: pointer; padding: 0; }
+  .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--paper); border-radius: 1px; transition: all 0.3s; transform-origin: center; }
+  .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+  .hamburger.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 99; background: rgba(11,25,41,0.97);
+    backdrop-filter: blur(20px); display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 2rem;
+    opacity: 0; visibility: hidden; transition: opacity 0.35s, visibility 0.35s;
+  }
+  .mobile-menu.is-open { opacity: 1; visibility: visible; }
+  .mobile-menu a {
+    font-family: var(--serif); font-size: 2rem; font-weight: 500;
+    color: var(--paper-dim); text-decoration: none;
+    transform: translateY(20px); opacity: 0;
+    transition: color 0.2s, transform 0.4s ease, opacity 0.4s ease;
+  }
+  .mobile-menu.is-open a { transform: translateY(0); opacity: 1; }
+  .mobile-menu.is-open a:nth-child(1){transition-delay:0.05s}
+  .mobile-menu.is-open a:nth-child(2){transition-delay:0.1s}
+  .mobile-menu.is-open a:nth-child(3){transition-delay:0.15s}
+  .mobile-menu.is-open a:nth-child(4){transition-delay:0.2s}
+  .mobile-menu.is-open a:nth-child(5){transition-delay:0.25s}
+  .mobile-menu a:hover { color: var(--amber); }
+
+  @media (max-width: 760px) { .nav-links { display: none; } .hamburger { display: flex; } }
+
+  /* ========== LAYOUT ========== */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+  @media (min-width: 1180px) { .container { padding-left: 4.5rem; } }
+  section { padding: 96px 0; position: relative; }
+
+  /* ========== HERO (Code 2 structure + Code 1 radial bg + dual CTAs) ========== */
+  .hero {
+    padding-top: 156px; padding-bottom: 70px;
+    background: radial-gradient(ellipse at 50% 40%, rgba(167,139,250,0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, rgba(45,212,191,0.04) 0%, transparent 40%);
+  }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal);
+    margin-bottom: 22px; display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before { content:''; display: block; width: 22px; height: 1px; background: var(--teal); }
+  .hero-name {
+    font-family: var(--serif); font-optical-sizing: auto;
+    font-size: clamp(46px, 7.4vw, 80px); font-weight: 600;
+    color: var(--paper); line-height: 1.02; letter-spacing: -0.01em; margin-bottom: 18px;
+  }
+  .hero-name em { font-style: italic; font-weight: 500; color: var(--amber); }
+  .hero-title {
+    font-family: var(--serif); font-size: 22px; font-weight: 400;
+    font-style: italic; color: var(--paper-dim); margin-bottom: 30px; min-height: 34px;
+  }
+  .hero-title .tw-cursor { display: inline-block; width: 2px; height: 1em; background: var(--amber); margin-left: 2px; vertical-align: text-bottom; animation: twBlink 1s step-end infinite; }
+  @keyframes twBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .hero-bio { max-width: 600px; color: var(--paper-dim); font-size: 16px; line-height: 1.75; margin-bottom: 48px; }
+  .hero-bio strong { color: var(--paper); font-weight: 500; }
+
+  /* Dual CTAs from Code 1 */
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 8px; font-size: 13px;
+    font-weight: 500; font-family: var(--mono); text-decoration: none;
+    cursor: pointer; border: none; transition: all 0.2s ease;
+  }
+  .btn-primary { background: var(--amber); color: var(--ink); }
+  .btn-primary:hover { background: #ffb85c; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(240,163,60,0.25); }
+  .btn-ghost { background: transparent; color: var(--amber); border: 1.5px solid var(--amber); }
+  .btn-ghost:hover { background: var(--amber-soft); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(240,163,60,0.12); }
+
+  /* ========== PIPELINE RIG (Code 2) ========== */
+  .pipeline-rig {
+    margin-bottom: 52px; border: 1px solid var(--line);
+    border-radius: var(--radius); background: var(--ink-2);
+    padding: 22px 22px 18px; position: relative; overflow: hidden;
+  }
+  .pipeline-rig::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--teal), var(--purple), transparent); opacity: 0.5;
+  }
+  .pipeline-rig-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--paper-faint); margin-bottom: 16px; display: flex; justify-content: space-between; }
+  .pipeline-rig-label .hint { color: var(--paper-faint); opacity: 0.7; font-style: italic; text-transform: none; letter-spacing: 0; }
+  @media (max-width: 480px) { .pipeline-rig-label .hint{display:none} .pipeline-rig{padding:16px 14px 14px} .pipe-node{padding:8px 11px;font-size:11px} }
+  .pipe-track { display: flex; align-items: center; gap: 0; position: relative; overflow-x: auto; overflow-y: visible; scrollbar-width: none; padding-bottom: 4px; }
+  .pipe-track::-webkit-scrollbar { display: none; }
+  .pipe-node {
+    background: var(--ink); border: 1px solid var(--line); border-radius: 7px;
+    padding: 10px 14px; font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+    letter-spacing: 0.02em; color: var(--paper-faint); white-space: nowrap;
+    cursor: pointer; flex-shrink: 0;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .pipe-node:hover, .pipe-node.is-active {
+    border-color: var(--amber); color: var(--amber); background: var(--amber-soft);
+    transform: translateY(2px); box-shadow: 0 4px 16px rgba(240,163,60,0.1);
+  }
+  .pipe-connector { flex: 1; height: 1px; background: var(--line); position: relative; overflow: hidden; min-width: 16px; }
+  .pipe-pulse {
+    position: absolute; top: -1.5px; left: -100%; width: 34%; height: 4px;
+    border-radius: 2px; background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    animation: pulseFlow 2.8s ease-in-out infinite;
+  }
+  .pipe-connector:nth-of-type(2) .pipe-pulse{animation-delay:0.45s}
+  .pipe-connector:nth-of-type(4) .pipe-pulse{animation-delay:0.9s}
+  .pipe-connector:nth-of-type(6) .pipe-pulse{animation-delay:1.35s}
+  .pipe-connector:nth-of-type(8) .pipe-pulse{animation-delay:1.8s}
+  @keyframes pulseFlow { 0%{left:-40%} 100%{left:120%} }
+  .pipe-detail { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); font-size: 13px; color: var(--paper-dim); line-height: 1.65; min-height: 42px; transition: opacity 0.2s; }
+  .pipe-detail strong { color: var(--amber); font-family: var(--mono); font-weight: 500; }
+
+  /* ========== STATS (Code 2) ========== */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 48px; }
+  .stat-card {
+    background: var(--ink-2); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 18px 17px;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s; position: relative; overflow: hidden;
+  }
+  .stat-card::after { content:''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--teal), var(--amber)); opacity: 0; transition: opacity 0.25s; }
+  .stat-card:hover { border-color: var(--teal); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .stat-card:hover::after { opacity: 1; }
+  .stat-value { font-family: var(--mono); font-size: 27px; font-weight: 600; color: var(--paper); line-height: 1; margin-bottom: 6px; }
+  .stat-value .stat-accent { color: var(--amber); }
+  .stat-label { font-size: 12px; color: var(--paper-faint); line-height: 1.45; }
+
+  /* ========== ENGINEERING PHILOSOPHY (Code 1's hover-lift nodes, Code 2's palette) ========== */
+  .philosophy-section { padding-bottom: 40px; }
+  .section-eyebrow { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--paper-faint); margin-bottom: 10px; }
+  .section-title { font-family: var(--serif); font-size: 34px; font-weight: 600; color: var(--paper); letter-spacing: -0.01em; margin-bottom: 12px; }
+  .section-subtitle { text-align: center; color: var(--paper-dim); margin-bottom: 48px; font-size: 15px; }
+
+  .arch-flow-wrapper {
+  position: relative; border: 1px solid var(--line);
+  border-radius: 16px; padding: 50px 30px;
+  background: var(--ink-2);
+  /* overflow removed so tooltips can escape */
+}
+.arch-flow-bg {
+  position: absolute; inset: 0; border-radius: 16px;
+  overflow: hidden; pointer-events: none; z-index: 0;
+}
+.arch-flow-bg::before {
+  content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+  background: conic-gradient(from 0deg, transparent, var(--teal), transparent, var(--purple), transparent);
+  animation: spinSlow 10s linear infinite; opacity: 0.04;
+}
+  @keyframes spinSlow { 100%{transform:rotate(360deg)} }
+
+  .arch-flow {
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative; z-index: 2;
+  }
+  /* Animated flowing line from Code 1 */
+  .arch-flow-line {
+    position: absolute; top: 50%; left: 60px; right: 60px; height: 2px;
+    background: rgba(255,255,255,0.06); transform: translateY(-50%); z-index: 1;
+  }
+  .arch-flow-line::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, var(--teal), var(--purple), transparent);
+    animation: flowLine 3.5s linear infinite;
+  }
+  @keyframes flowLine { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+  .arch-node {
+    width: 18%; background: var(--ink); border: 1px solid var(--line);
+    border-radius: 12px; padding: 22px 12px; text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative; cursor: default;
+  }
+  .arch-node:hover {
+    transform: translateY(-14px) scale(1.05);
+    border-color: var(--amber);
+    box-shadow: 0 20px 40px rgba(240,163,60,0.12), 0 0 0 1px var(--amber-soft);
+    z-index: 3;
+  }
+  .arch-node-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+  .arch-node-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; color: var(--paper); font-family: var(--mono); }
+  .arch-node-sub { font-size: 0.72rem; color: var(--paper-faint); line-height: 1.4; }
+
+  /* Tooltip from Code 1 */
+  .arch-node-tooltip {
+    position: absolute; bottom: -52px; left: 50%; transform: translateX(-50%);
+    background: var(--amber); color: var(--ink); padding: 8px 16px;
+    border-radius: 6px; font-size: 0.7rem; font-weight: 600;
+    font-family: var(--mono); white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s;
+    transform: translateX(-50%) translateY(4px);
+  }
+  .arch-node-tooltip::before {
+    content: ''; position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0; border-left: 5px solid transparent;
+    border-right: 5px solid transparent; border-bottom: 5px solid var(--amber);
+  }
+  .arch-node:hover .arch-node-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* Keep first/last tooltips anchored inside the card instead of centering off-edge */
+  .arch-node:first-child .arch-node-tooltip {
+    left: 0; transform: translateX(0) translateY(4px);
+  }
+  .arch-node:first-child:hover .arch-node-tooltip {
+    transform: translateX(0) translateY(0);
+  }
+  .arch-node:first-child .arch-node-tooltip::before {
+    left: 24px; transform: translateX(-50%);
+  }
+
+  .arch-node:last-child .arch-node-tooltip {
+    left: auto; right: 0; transform: translateX(0) translateY(4px);
+  }
+  .arch-node:last-child:hover .arch-node-tooltip {
+    transform: translateX(0) translateY(0);
+  }
+  .arch-node:last-child .arch-node-tooltip::before {
+    left: auto; right: 24px; transform: translateX(50%);
+  }
+
+  /* Safety net for narrow phones: allow wrapping instead of a fixed-width overflow */
+  @media (max-width: 480px) {
+    .arch-node-tooltip {
+      white-space: normal; max-width: 220px; text-align: center;
+    }
+  }
+  @media (max-width: 760px) {
+    .arch-flow { flex-direction: column; gap: 16px; }
+    .arch-flow-line { display: none; }
+    .arch-node { width: 85%; }
+    .arch-node-tooltip { bottom: auto; top: -48px; }
+    .arch-node-tooltip::before { top: auto; bottom: -4px; border-bottom: none; border-top: 5px solid var(--amber); }
+  }
+
+  /* ========== METRICS GRID (Code 1, inside project cards) ========== */
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+  .metric-box {
+    background: rgba(255,255,255,0.025); border-left: 3px solid var(--teal);
+    padding: 16px; border-radius: 0 8px 8px 0;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .metric-box:nth-child(2) { border-left-color: var(--amber); }
+  .metric-box:nth-child(3) { border-left-color: var(--purple); }
+  .metric-box:nth-child(4) { border-left-color: var(--rose); }
+  .metric-box:hover { background: rgba(255,255,255,0.04); }
+  .metric-num { font-family: var(--mono); font-size: 1.75rem; font-weight: 800; display: block; line-height: 1; margin-bottom: 4px; }
+  .metric-box:nth-child(1) .metric-num { color: var(--teal); }
+  .metric-box:nth-child(2) .metric-num { color: var(--amber); }
+  .metric-box:nth-child(3) .metric-num { color: var(--purple); }
+  .metric-box:nth-child(4) .metric-num { color: var(--rose); }
+  .metric-label { font-size: 0.8rem; color: var(--paper-faint); line-height: 1.4; }
+
+  /* ========== FILTER BAR ========== */
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; margin-top: -16px; }
+  .filter-chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em;
+    padding: 6px 13px; border-radius: 20px; border: 1px solid var(--line);
+    background: transparent; color: var(--paper-faint); cursor: pointer; transition: all 0.2s;
+  }
+  .filter-chip:hover { border-color: var(--paper-dim); color: var(--paper); }
+  .filter-chip.is-active { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
+
+  /* ========== PROJECT CARDS (Code 2 structure + Code 1 metrics grid embedded) ========== */
+  .project-card {
+    background: var(--ink-2); border: 1px solid var(--line);
+    border-radius: 16px; overflow: hidden; margin-bottom: 36px;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .project-card.is-filtered-out { opacity: 0; transform: translateY(12px); pointer-events: none; position: absolute; visibility: hidden; }
+  .project-header { padding: 38px 40px 30px; border-bottom: 1px solid var(--line); }
+  .project-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; padding: 4px 11px; border-radius: 20px; font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.03em; border: 1px solid transparent; }
+  .badge-teal { background: var(--teal-soft); color: var(--teal); }
+  .badge-amber { background: var(--amber-soft); color: var(--amber); }
+  .badge-purple { background: var(--purple-soft); color: var(--purple); }
+  .badge-line { background: transparent; color: var(--paper-faint); border-color: var(--line); }
+  .project-date { font-family: var(--mono); font-size: 11.5px; color: var(--paper-faint); margin-left: auto; }
+  .project-title { font-family: var(--serif); font-size: 25px; font-weight: 600; color: var(--paper); letter-spacing: -0.005em; margin-bottom: 10px; line-height: 1.3; }
+  .project-subtitle { font-size: 13px; color: var(--teal); font-weight: 500; margin-bottom: 18px; font-family: var(--mono); }
+  .project-desc { color: var(--paper-dim); font-size: 15px; line-height: 1.75; max-width: 720px; }
+
+  /* ========== TECH TAGS ========== */
+  .tech-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 22px 40px; border-bottom: 1px solid var(--line); background: var(--ink); }
+  .tech-tag {
+    font-size: 11px; font-weight: 500; font-family: var(--mono);
+    padding: 5px 11px; background: var(--ink-2); border: 1px solid var(--line);
+    border-radius: 4px; color: var(--paper-dim); letter-spacing: 0.02em;
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .tech-tag.is-match { border-color: var(--teal); color: var(--teal); box-shadow: 0 0 8px rgba(45,212,191,0.1); }
+
+  /* ========== ARCHITECTURE ACCORDION ========== */
+  .arch-section { border-bottom: 1px solid var(--line); }
+  .arch-toggle {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 22px 40px; background: none; border: none;
+    cursor: pointer; text-align: left; color: var(--paper); font-family: var(--mono);
+  }
+  .arch-toggle-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--paper-faint); }
+  .arch-toggle-icon { font-size: 13px; color: var(--paper-faint); transition: transform 0.25s, color 0.25s; flex-shrink: 0; }
+  .arch-section.is-open .arch-toggle-icon { transform: rotate(180deg); color: var(--amber); }
+  .arch-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .arch-section.is-open .arch-body { max-height: 800px; }
+  .arch-body-inner { padding: 0 40px 32px; }
+  .diagram-wrap { background: var(--ink); border-radius: 10px; border: 1px solid var(--line); overflow: hidden; padding: 16px; }
+
+  /* ========== HIGHLIGHTS ========== */
+  .highlights-section { padding: 32px 40px 38px; }
+  .highlights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .highlight-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 15px 17px; background: var(--ink); border-radius: 8px;
+    border: 1px solid var(--line); cursor: default; transition: border-color 0.2s, transform 0.2s;
+  }
+  .highlight-item:hover { border-color: var(--line-soft); transform: translateX(3px); }
+  .highlight-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); margin-top: 7px; flex-shrink: 0; }
+  .highlight-text { font-size: 13px; color: var(--paper-dim); line-height: 1.6; }
+  .highlight-text strong { color: var(--paper); font-weight: 600; }
+
+  /* ========== SKILLS (Code 2 groups + Code 1 pill tags for AI/Arch category) ========== */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .skill-group {
+    background: var(--ink-2); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 22px;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  }
+  .skill-group:hover { border-color: var(--line-soft); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+  .skill-group-title { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--paper-faint); margin-bottom: 14px; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  /* Code 2 square tags */
+  .skill-tag {
+    font-size: 12px; padding: 5px 11px; background: var(--ink);
+    border: 1px solid var(--line); border-radius: 4px; color: var(--paper-dim);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .skill-tag:hover { border-color: var(--teal); color: var(--teal); }
+  /* Code 1 pill tags (used for AI/Architecture category) */
+  .skill-tag--pill {
+    background: var(--purple-soft); border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 20px; color: var(--paper);
+  }
+  .skill-tag--pill:hover { background: rgba(167,139,250,0.25); border-color: var(--purple); color: var(--purple); }
+
+  /* ========== CERTIFICATIONS ========== */
+  .cert-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .cert-item {
+    display: flex; align-items: flex-start; gap: 13px; padding: 17px;
+    background: var(--ink-2); border: 1px solid var(--line);
+    border-radius: var(--radius); transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .cert-item:hover { border-color: var(--paper-dim); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .cert-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink); font-family: var(--mono); font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .cert-name { font-size: 13px; font-weight: 500; color: var(--paper); margin-bottom: 3px; line-height: 1.4; }
+  .cert-meta { font-family: var(--mono); font-size: 11px; color: var(--paper-faint); }
+
+  /* ========== CONTACT ========== */
+  .contact-section { text-align: left; }
+  .contact-card {
+    background: var(--ink-2); border: 1px solid var(--line);
+    border-radius: 18px; padding: 52px 48px; position: relative; overflow: hidden;
+  }
+  .contact-card::after {
+    content: ''; position: absolute; right: -60px; top: -60px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, var(--amber-soft), transparent 70%);
+    animation: cGlow 6s ease-in-out infinite;
+  }
+  @keyframes cGlow { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.1)} }
+  .contact-headline { font-family: var(--serif); font-size: 32px; font-weight: 600; color: var(--paper); margin-bottom: 14px; max-width: 480px; line-height: 1.2; position: relative; }
+  .contact-headline em { color: var(--amber); font-style: italic; font-weight: 500; }
+  .contact-sub { color: var(--paper-dim); font-size: 15px; margin-bottom: 30px; max-width: 460px; position: relative; }
+  .footer-links { display: flex; gap: 12px; flex-wrap: wrap; position: relative; }
+  .footer-link {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 18px; background: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; color: var(--paper-dim); text-decoration: none;
+    font-family: var(--mono); font-size: 12.5px; font-weight: 500; transition: all 0.2s;
+  }
+  .footer-link:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+  .footer-link.is-primary { background: var(--amber); color: var(--ink); border-color: var(--amber); }
+  .footer-link.is-primary:hover { background: #ffb85c; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(240,163,60,0.3); }
+
+  footer.site-end { padding: 32px 0 56px; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--paper-faint); letter-spacing: 0.04em; }
+
+  /* ========== BACK TO TOP ========== */
+  .back-to-top {
+    position: fixed; bottom: 32px; right: 32px; width: 42px; height: 42px;
+    border-radius: 50%; background: var(--amber); color: var(--ink); border: none;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; z-index: 50; opacity: 0; visibility: hidden; transform: translateY(12px);
+    transition: all 0.3s; box-shadow: 0 4px 16px rgba(240,163,60,0.2);
+  }
+  .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+  .back-to-top:hover { background: #ffb85c; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(240,163,60,0.35); }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--ink); }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--line-soft); }
+
+  a:focus-visible, button:focus-visible, .pipe-node:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; transition-delay: var(--stagger, 0s); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 760px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .highlights-grid { grid-template-columns: 1fr; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .project-header, .arch-toggle, .arch-body-inner, .highlights-section, .tech-row { padding-left: 24px; padding-right: 24px; }
+    .contact-card { padding: 36px 26px; }
+    .contact-headline { font-size: 26px; }
+    .back-to-top { bottom: 20px; right: 20px; width: 38px; height: 38px; }
+  }
+  @media (max-width: 480px) { .stats-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+<div class="spine" aria-hidden="true"><div class="spine-fill" id="spineFill"></div></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-brand"><span class="dot"></span>Vishal Ansari</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#philosophy" data-nav="philosophy">Architecture</a></li>
+    <li><a href="#projects" data-nav="projects">Projects</a></li>
+    <li><a href="#skills" data-nav="skills">Skills</a></li>
+    <li><a href="#certifications" data-nav="certifications">Certifications</a></li>
+    <li><a href="#contact" data-nav="contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#philosophy">Architecture</a>
+  <a href="#projects">Projects</a>
+  <a href="#skills">Skills</a>
+  <a href="#certifications">Certifications</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-eyebrow reveal">Senior Data Engineer</div>
+    <!-- <div class="hero-eyebrow reveal">Senior Data Engineer · JMAN Group · Chennai, IN</div> -->
+    <h1 class="hero-name reveal" style="--stagger:0.08s">Vishal <em>Ansari</em></h1>
+    <p class="hero-title reveal" style="--stagger:0.16s" id="heroTitle"></p>
+    <p class="hero-bio reveal" style="--stagger:0.24s">
+      <strong>2+ years</strong> designing enterprise-grade data platforms on Azure and Databricks — from raw ingestion to BI reporting.
+      I build the plumbing that turns messy source systems into reliable, governed, query-ready data.
+      Currently focused on HR data integration across <strong>3 enterprise systems</strong> serving <strong>5,000+ employees</strong>.
+    </p>
+
+    <!-- Interactive pipeline (Code 2) -->
+    <div class="pipeline-rig reveal" style="--stagger:0.32s">
+      <div class="pipeline-rig-label"><span>Live pipeline trace</span><span class="hint">click a stage ↓</span></div>
+      <div class="pipe-track" id="pipeTrack">
+        <div class="pipe-node is-active" data-stage="source" tabindex="0">Source</div>
+        <div class="pipe-connector"><div class="pipe-pulse"></div></div>
+        <div class="pipe-node" data-stage="bronze" tabindex="0">Bronze</div>
+        <div class="pipe-connector"><div class="pipe-pulse"></div></div>
+        <div class="pipe-node" data-stage="silver" tabindex="0">Silver</div>
+        <div class="pipe-connector"><div class="pipe-pulse"></div></div>
+        <div class="pipe-node" data-stage="core" tabindex="0">Core</div>
+        <div class="pipe-connector"><div class="pipe-pulse"></div></div>
+        <div class="pipe-node" data-stage="writeback" tabindex="0">Writeback</div>
+      </div>
+      <div class="pipe-detail" id="pipeDetail">
+        <strong>Source —</strong> Raw records land from Dayforce HCM, MidPoint IDM, and Cornerstone LMS via REST APIs with OAuth2, 100+ events daily.
+      </div>
+    </div>
+
+    <div class="stats-row reveal" style="--stagger:0.4s">
+      <div class="stat-card"><div class="stat-value"><span class="stat-accent" data-count="5000" data-suffix="+">0</span></div><div class="stat-label">Employee records synced across 3 systems</div></div>
+      <div class="stat-card"><div class="stat-value"><span class="stat-accent" data-count="95" data-suffix="%">0</span></div><div class="stat-label">Pipeline reliability</div></div>
+      <div class="stat-card"><div class="stat-value"><span class="stat-accent" data-count="40" data-suffix="%">0</span></div><div class="stat-label">Faster reporting after migration</div></div>
+      <div class="stat-card"><div class="stat-value"><span class="stat-accent" data-count="20" data-suffix="h">0</span></div><div class="stat-label">Weekly manual work eliminated</div></div>
+    </div>
+
+    <!-- Dual CTAs from Code 1 -->
+    <div class="hero-cta reveal" style="--stagger:0.48s">
+      <a href="#philosophy" class="btn btn-primary">View My Architecture →</a>
+      <a href="#projects" class="btn btn-ghost">See Case Studies</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ENGINEERING PHILOSOPHY (Code 1's hover-lift nodes) ==================== -->
+<section class="philosophy-section" id="philosophy">
+  <div class="container">
+    <p class="section-eyebrow reveal" style="color:var(--purple)">Philosophy</p>
+    <h2 class="section-title reveal" style="--stagger:0.08s">My Engineering Approach</h2>
+    <p class="section-subtitle reveal" style="--stagger:0.14s">Hover over each stage to see how raw data transforms into business value.</p>
+
+    <div class="arch-flow-wrapper reveal" style="--stagger:0.2s">
+      <div class="arch-flow-bg"></div>
+      <div class="arch-flow-line"></div>
+      <div class="arch-flow">
+        <div class="arch-node">
+          <span class="arch-node-icon">📥</span>
+          <div class="arch-node-title">Sources</div>
+          <div class="arch-node-sub">APIs, SAP, SQL</div>
+          <div class="arch-node-tooltip">Raw ingestion via ADF & REST</div>
+        </div>
+        <div class="arch-node">
+          <span class="arch-node-icon">🥉</span>
+          <div class="arch-node-title">Bronze</div>
+          <div class="arch-node-sub">Raw Delta Lake</div>
+          <div class="arch-node-tooltip">Full dump, immutable history</div>
+        </div>
+        <div class="arch-node">
+          <span class="arch-node-icon">🥈</span>
+          <div class="arch-node-title">Silver</div>
+          <div class="arch-node-sub">Cleansed Data</div>
+          <div class="arch-node-tooltip">Deduplicated, PII masked via Unity Catalog</div>
+        </div>
+        <div class="arch-node">
+          <span class="arch-node-icon">🥇</span>
+          <div class="arch-node-title">Gold / Core</div>
+          <div class="arch-node-sub">Business Logic</div>
+          <div class="arch-node-tooltip">Aggregated, SCD2 applied, modeled via dbt</div>
+        </div>
+        <div class="arch-node">
+          <span class="arch-node-icon">🚀</span>
+          <div class="arch-node-title">Serve / AI</div>
+          <div class="arch-node-sub">PowerBI & Genie</div>
+          <div class="arch-node-tooltip">Natural language analytics & dashboards</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJECTS (Code 2 cards + Code 1 metrics grid) ==================== -->
+<section id="projects" style="background:var(--ink-2);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);">
+  <div class="container">
+    <p class="section-eyebrow reveal">Work</p>
+    <h2 class="section-title reveal" style="--stagger:0.08s">Featured Case Studies</h2>
+
+    <div class="filter-bar reveal" style="--stagger:0.14s" id="filterBar">
+      <button class="filter-chip is-active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="Azure Databricks">Databricks</button>
+      <button class="filter-chip" data-filter="Unity Catalog">Unity Catalog</button>
+      <button class="filter-chip" data-filter="Power BI">Power BI</button>
+      <button class="filter-chip" data-filter="REST APIs">REST APIs</button>
+      <button class="filter-chip" data-filter="dbt">dbt</button>
+    </div>
+
+    <!-- PROJECT 1 -->
+    <div class="project-card reveal" style="--stagger:0.2s" data-tech="Azure Databricks,Unity Catalog,REST APIs">
+      <div class="project-header">
+        <div class="project-meta">
+          <!-- <span class="badge badge-teal">JMAN Group</span> -->
+          <span class="badge badge-amber">Active</span>
+          <span class="badge badge-purple">Medallion Arch</span>
+          <span class="project-date">Apr 2024 – Present</span>
+        </div>
+        <h3 class="project-title">Enterprise HR Data Integration &amp; Identity Provisioning Platform</h3>
+        <p class="project-subtitle">Azure Databricks · Dayforce HCM · MidPoint IDM · Cornerstone LMS · REST APIs · Unity Catalog</p>
+        <p class="project-desc">
+          Designed and implemented an automated HR integration platform that replaced a fully manual 3-system handoff with
+          a real-time, fault-tolerant data pipeline. Synchronizes employee lifecycle data — hires, updates, terminations —
+          across Dayforce, MidPoint, and Cornerstone on the same day events occur.
+        </p>
+        <!-- Code 1's metrics grid embedded here -->
+        <div class="metrics-grid">
+          <div class="metric-box"><span class="metric-num">15-20h</span><span class="metric-label">Manual work saved per week</span></div>
+          <div class="metric-box"><span class="metric-num">80%</span><span class="metric-label">Reduction in reprocessing effort</span></div>
+          <div class="metric-box"><span class="metric-num">0</span><span class="metric-label">Manual touchpoints daily</span></div>
+          <div class="metric-box"><span class="metric-num">5000+</span><span class="metric-label">Employee records synced</span></div>
+        </div>
+      </div>
+
+      <div class="tech-row">
+        <span class="tech-tag">Azure Databricks</span><span class="tech-tag">PySpark</span><span class="tech-tag">Delta Lake</span>
+        <span class="tech-tag">REST APIs</span><span class="tech-tag">OAuth2</span><span class="tech-tag">Unity Catalog</span>
+        <span class="tech-tag">ABAC/RBAC</span><span class="tech-tag">Python</span><span class="tech-tag">SQL</span>
+        <span class="tech-tag">Dayforce HCM</span><span class="tech-tag">MidPoint IDM</span><span class="tech-tag">Cornerstone LMS</span>
+      </div>
+
+      <div class="arch-section">
+        <button class="arch-toggle" aria-expanded="false">
+          <span class="arch-toggle-label">View Architecture — 4-Layer Medallion Pipeline</span>
+          <span class="arch-toggle-icon">▾</span>
+        </button>
+        <div class="arch-body"><div class="arch-body-inner"><div class="diagram-wrap">
+          <svg width="100%" viewBox="0 0 1020 565" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>HR Integration — 4-Layer Medallion Architecture</title>
+<defs>
+  <marker id="mb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#4FA8E8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="mg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#34D39A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="mp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="mc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<rect x="12" y="12" width="148" height="380" rx="14" fill="#0E1E35" stroke="#1E3A5C" stroke-width="1.2"/>
+<text x="86" y="36" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#4FA8E8" letter-spacing="0.1em">SOURCES</text>
+<rect x="174" y="12" width="170" height="380" rx="14" fill="#1A1500" stroke="#7A5C00" stroke-width="1.2"/>
+<text x="259" y="36" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#FBBF24" letter-spacing="0.1em">BRONZE</text>
+<rect x="358" y="12" width="170" height="380" rx="14" fill="#001A10" stroke="#0B6640" stroke-width="1.2"/>
+<text x="443" y="36" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#34D39A" letter-spacing="0.1em">SILVER</text>
+<rect x="542" y="12" width="158" height="380" rx="14" fill="#130B28" stroke="#4C1D95" stroke-width="1.2"/>
+<text x="621" y="36" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#A78BFA" letter-spacing="0.1em">CORE / SSOT</text>
+<rect x="714" y="12" width="296" height="380" rx="14" fill="#1A0A00" stroke="#7C2D12" stroke-width="1.2"/>
+<text x="862" y="36" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#F87171" letter-spacing="0.1em">WRITEBACK</text>
+<rect x="22" y="52" width="128" height="46" rx="8" fill="#0F2744" stroke="#2563EB" stroke-width="1.5"/><text x="86" y="72" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#fff">Dayforce HCM</text>
+<rect x="22" y="110" width="128" height="46" rx="8" fill="#0F2744" stroke="#2563EB" stroke-width="1.5"/><text x="86" y="130" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#fff">MidPoint IDM</text>
+<rect x="22" y="168" width="128" height="46" rx="8" fill="#0F2744" stroke="#2563EB" stroke-width="1.5"/><text x="86" y="188" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#fff">Cornerstone LMS</text>
+<rect x="184" y="48" width="150" height="68" rx="8" fill="#1C1400" stroke="#D97706" stroke-width="1.2"/><text x="259" y="68" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#FBBF24">Bronze · Dayforce</text><text x="259" y="84" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#A16207">employee + details</text>
+<rect x="184" y="128" width="150" height="68" rx="8" fill="#1C1400" stroke="#D97706" stroke-width="1.2"/><text x="259" y="148" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#FBBF24">Bronze · CSOD</text><text x="259" y="164" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#A16207">employee + status</text>
+<rect x="184" y="210" width="150" height="46" rx="8" fill="#200A0A" stroke="#991B1B" stroke-width="1.2" stroke-dasharray="5 3"/><text x="259" y="230" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#F87171">DLQ · Retry · Replay</text>
+<rect x="184" y="270" width="150" height="42" rx="8" fill="#001A2C" stroke="#0369A1" stroke-width="1.2"/><text x="259" y="295" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#38BDF8">Watermark Table</text>
+<rect x="368" y="48" width="150" height="68" rx="8" fill="#001A10" stroke="#059669" stroke-width="1.2"/><text x="443" y="68" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#34D39A">prep_dayforce</text><text x="443" y="84" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6EE7B7">cleaned entities</text>
+<rect x="368" y="128" width="150" height="68" rx="8" fill="#001A10" stroke="#059669" stroke-width="1.2"/><text x="443" y="148" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#34D39A">prep_cornerstone</text><text x="443" y="164" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6EE7B7">cleaned entities</text>
+<rect x="368" y="210" width="150" height="54" rx="8" fill="#001A10" stroke="#059669" stroke-width="1.2"/><text x="443" y="234" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#34D39A">Transforms</text><text x="443" y="250" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6EE7B7">Dedup · Standardise</text>
+<rect x="552" y="48" width="138" height="52" rx="8" fill="#130B28" stroke="#7C3AED" stroke-width="1.2"/><text x="621" y="70" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#A78BFA">employee_dayforce</text>
+<rect x="552" y="112" width="138" height="52" rx="8" fill="#130B28" stroke="#7C3AED" stroke-width="1.2"/><text x="621" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#A78BFA">employee_csod</text>
+<rect x="552" y="176" width="138" height="46" rx="8" fill="#130B28" stroke="#7C3AED" stroke-width="1.2"/><text x="621" y="196" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#A78BFA">PII Masking</text><text x="621" y="212" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#C4B5FD">Unity Catalog ABAC</text>
+<rect x="552" y="234" width="138" height="46" rx="8" fill="#130B28" stroke="#7C3AED" stroke-width="1.2"/><text x="621" y="254" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#A78BFA">RBAC Governance</text><text x="621" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#C4B5FD">20+ PII fields</text>
+<rect x="724" y="48" width="276" height="52" rx="8" fill="#1A0A00" stroke="#C2410C" stroke-width="1.2"/><text x="862" y="70" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#FB923C">dayforce_master → MidPoint</text><text x="862" y="86" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#FDBA74">POST / PATCH</text>
+<rect x="724" y="112" width="276" height="52" rx="8" fill="#1A0A00" stroke="#C2410C" stroke-width="1.2"/><text x="862" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#FB923C">master_enriched</text><text x="862" y="150" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#FDBA74">+ GID + Email from MidPoint</text>
+<rect x="724" y="176" width="276" height="46" rx="8" fill="#1A0A00" stroke="#C2410C" stroke-width="1.2"/><text x="862" y="196" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#FB923C">Cornerstone Sync</text><text x="862" y="212" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#FDBA74">POST / PATCH via API</text>
+<rect x="724" y="234" width="276" height="46" rx="8" fill="#200A0A" stroke="#991B1B" stroke-width="1.2" stroke-dasharray="5 3"/><text x="862" y="254" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#F87171">Failed Sync Tables</text><text x="862" y="270" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#FCA5A5">Auto-retry on next run</text>
+<line x1="150" y1="75" x2="182" y2="82" stroke="#4FA8E8" stroke-width="2" marker-end="url(#mb)" fill="none"/>
+<line x1="150" y1="133" x2="182" y2="162" stroke="#4FA8E8" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#mb)" fill="none"/>
+<line x1="150" y1="191" x2="182" y2="172" stroke="#4FA8E8" stroke-width="2" marker-end="url(#mb)" fill="none"/>
+<line x1="334" y1="82" x2="366" y2="82" stroke="#34D39A" stroke-width="2" marker-end="url(#mg)" fill="none"/>
+<line x1="334" y1="162" x2="366" y2="162" stroke="#34D39A" stroke-width="2" marker-end="url(#mg)" fill="none"/>
+<line x1="518" y1="82" x2="550" y2="74" stroke="#A78BFA" stroke-width="2" marker-end="url(#mp)" fill="none"/>
+<line x1="518" y1="162" x2="550" y2="138" stroke="#A78BFA" stroke-width="2" marker-end="url(#mp)" fill="none"/>
+<line x1="690" y1="74" x2="722" y2="74" stroke="#F87171" stroke-width="2" marker-end="url(#mc)" fill="none"/>
+<line x1="690" y1="138" x2="722" y2="138" stroke="#F87171" stroke-width="2" marker-end="url(#mc)" fill="none"/>
+<rect x="12" y="405" width="998" height="80" rx="10" fill="#0A1525" stroke="#1E3048" stroke-width="1"/>
+<text x="28" y="425" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#64748B" letter-spacing="0.1em">KEY FLOWS</text>
+<line x1="28" y1="444" x2="68" y2="444" stroke="#4FA8E8" stroke-width="2" marker-end="url(#mb)"/><text x="76" y="448" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Source → Ingest</text>
+<line x1="190" y1="444" x2="230" y2="444" stroke="#34D39A" stroke-width="2" marker-end="url(#mg)"/><text x="238" y="448" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Cleanse → Standardise</text>
+<line x1="390" y1="444" x2="430" y2="444" stroke="#A78BFA" stroke-width="2" marker-end="url(#mp)"/><text x="438" y="448" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Consolidate → SSOT</text>
+<line x1="590" y1="444" x2="630" y2="444" stroke="#F87171" stroke-width="2" marker-end="url(#mc)"/><text x="638" y="448" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Writeback → Target</text>
+<text x="28" y="472" font-family="Inter,sans-serif" font-size="9.5" fill="#94A3B8">① Dayforce → MidPoint (POST/PATCH)    ② MidPoint → Databricks (GID + Email)    ③ MidPoint → Dayforce (PATCH)    ④ Databricks → Cornerstone (POST/PATCH)</text>
+          </svg>
+        </div></div></div>
+      </div>
+
+      <div class="highlights-section">
+        <div class="arch-toggle-label" style="margin-bottom:16px;padding:0;">Key Contributions</div>
+        <div class="highlights-grid">
+          <div class="highlight-item"><div class="highlight-dot"></div><div class="highlight-text"><strong>Medallion Architecture</strong> — All 4 layers (Bronze → Silver → Core → Writeback) as SSOT for 5,000+ employee records across 3 systems.</div></div>
+          <div class="highlight-item"><div class="highlight-dot"></div><div class="highlight-text"><strong>Ingestion Framework</strong> — 3-notebook pipeline: XRef discovery, parallel extraction, DLQ-based replay with watermark lineage.</div></div>
+          <div class="highlight-item"><div class="highlight-dot"></div><div class="highlight-text"><strong>Failure Recovery</strong> — Dead Letter Queue with bounded retry cycles, reducing reprocessing effort by <strong>80%</strong>.</div></div>
+          <div class="highlight-item"><div class="highlight-dot"></div><div class="highlight-text"><strong>PII Masking</strong> — 20+ PII fields protected via Unity Catalog Governed Tags, ABAC policies, custom masking functions.</div></div>
+          <div class="highlight-item"><div class="highlight-dot"></div><div class="highlight-text"><strong>Identity Provisioning</strong> — Automated Dayforce ↔ MidPoint GID ↔ Cornerstone linking — same-day onboarding and termination.</div></div>
+          <div class="highlight-item"><div class="highlight-dot"></div><div class="highlight-text"><strong>Zero Manual Touchpoints</strong> — 100+ daily events, 3,000+ monthly, zero manual intervention.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 2 -->
+    <div class="project-card reveal" style="--stagger:0.28s" data-tech="Azure Databricks,Power BI,dbt">
+      <div class="project-header">
+        <div class="project-meta">
+          <!-- <span class="badge badge-teal">JMAN Group</span> -->
+          <span class="badge badge-line">Manufacturing</span>
+          <span class="badge badge-amber">Completed</span>
+          <span class="project-date">Jul 2024 – Mar 2025</span>
+        </div>
+        <h3 class="project-title">Data Modernization &amp; Governance Platform</h3>
+        <p class="project-subtitle">Azure Databricks · ADF · dbt · Delta Lake · Purview · Unity Catalog · Power BI · Tableau</p>
+        <p class="project-desc">
+          Led end-to-end data modernization across a 9-factory manufacturing enterprise — migrating 50+ fragmented Alteryx workflows
+          into a governed, Medallion-based Databricks platform. Built 30+ ingestion pipelines from SAP, SQL Server, SharePoint, Excel, FTP, and HTTP.
+        </p>
+        <!-- Code 1's metrics grid -->
+        <div class="metrics-grid">
+          <div class="metric-box"><span class="metric-num">40%</span><span class="metric-label">Faster report generation</span></div>
+          <div class="metric-box"><span class="metric-num">150GB</span><span class="metric-label">Processed monthly</span></div>
+          <div class="metric-box"><span class="metric-num">30%</span><span class="metric-label">Decrease in platform costs</span></div>
+          <div class="metric-box"><span class="metric-num">95%</span><span class="metric-label">Pipeline reliability achieved</span></div>
+        </div>
+      </div>
+
+      <div class="tech-row">
+        <span class="tech-tag">Azure Databricks</span><span class="tech-tag">Azure Data Factory</span><span class="tech-tag">dbt</span>
+        <span class="tech-tag">Delta Lake</span><span class="tech-tag">ADLS Gen2</span><span class="tech-tag">Purview</span>
+        <span class="tech-tag">Unity Catalog</span><span class="tech-tag">Power BI</span><span class="tech-tag">Tableau</span>
+        <span class="tech-tag">SAP ERP</span><span class="tech-tag">Claude AI</span><span class="tech-tag">Databricks Genie</span>
+        <span class="tech-tag">SCD1/SCD2</span><span class="tech-tag">Key Vault</span><span class="tech-tag">CI/CD</span>
+      </div>
+
+      <div class="arch-section">
+        <button class="arch-toggle" aria-expanded="false">
+          <span class="arch-toggle-label">View Architecture — Data Modernization Target State</span>
+          <span class="arch-toggle-icon">▾</span>
+        </button>
+        <div class="arch-body"><div class="arch-body-inner"><div class="diagram-wrap">
+          <svg width="100%" viewBox="0 0 880 440" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Data Modernization Architecture</title>
+<defs>
+  <marker id="b1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#1A3A5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="b2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#0F7E6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="b3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<rect x="10" y="10" width="120" height="280" rx="10" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+<text x="70" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#1E40AF" letter-spacing="0.08em">SOURCES</text>
+<rect x="18" y="40" width="104" height="30" rx="6" fill="#1A3A5C"/><text x="70" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">SAP ERP</text>
+<rect x="18" y="78" width="104" height="30" rx="6" fill="#1A3A5C"/><text x="70" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">SQL Server</text>
+<rect x="18" y="116" width="104" height="30" rx="6" fill="#1A3A5C"/><text x="70" y="136" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">Cornerstone</text>
+<rect x="18" y="154" width="104" height="30" rx="6" fill="#1A3A5C"/><text x="70" y="174" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">SharePoint</text>
+<rect x="18" y="192" width="48" height="30" rx="6" fill="#1A3A5C"/><text x="42" y="212" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">Excel</text>
+<rect x="72" y="192" width="48" height="30" rx="6" fill="#1A3A5C"/><text x="96" y="212" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">FTP</text>
+<rect x="145" y="10" width="120" height="280" rx="10" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+<text x="205" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#92400E" letter-spacing="0.08em">INGESTION</text>
+<rect x="155" y="40" width="100" height="48" rx="6" fill="#0F2744"/><text x="205" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">Azure Data</text><text x="205" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">Factory</text>
+<rect x="155" y="98" width="100" height="36" rx="6" fill="#0F2744"/><text x="205" y="121" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">Databricks</text>
+<rect x="155" y="146" width="100" height="40" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/><text x="205" y="163" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#065F46">Incremental</text><text x="205" y="178" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#047857">Watermark</text>
+<rect x="155" y="198" width="100" height="36" rx="6" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/><text x="205" y="221" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#991B1B">150+ GB/mo</text>
+<rect x="280" y="10" width="230" height="280" rx="10" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+<text x="395" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#065F46" letter-spacing="0.08em">MEDALLION</text>
+<rect x="292" y="42" width="62" height="80" rx="6" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1"/><text x="323" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#92400E">Bronze</text><text x="323" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#A16207">Raw</text><text x="323" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#A16207">+dbt</text>
+<rect x="364" y="42" width="62" height="80" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/><text x="395" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#065F46">Silver</text><text x="395" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#047857">SSOT</text><text x="395" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#047857">Cleaned</text>
+<rect x="436" y="42" width="62" height="80" rx="6" fill="#FFFBEB" stroke="#FCD34D" stroke-width="2"/><text x="467" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#92400E">Gold</text><text x="467" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#A16207">Mart</text><text x="467" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#A16207">+dbt</text>
+<line x1="354" y1="82" x2="362" y2="82" stroke="#0F7E6B" stroke-width="1.5" marker-end="url(#b2)" fill="none"/>
+<line x1="426" y1="82" x2="434" y2="82" stroke="#0F7E6B" stroke-width="1.5" marker-end="url(#b2)" fill="none"/>
+<rect x="292" y="134" width="206" height="26" rx="6" fill="#0F2744"/><text x="395" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#fff">PySpark + dbt</text>
+<rect x="292" y="170" width="98" height="36" rx="6" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1"/><text x="341" y="188" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">SCD1/SCD2</text>
+<rect x="400" y="170" width="98" height="36" rx="6" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1"/><text x="449" y="188" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">Quality 99%+</text>
+<rect x="292" y="218" width="206" height="30" rx="6" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1"/><text x="395" y="238" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#0369A1">Azure Repos · CI/CD</text>
+<rect x="525" y="10" width="130" height="280" rx="10" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1"/>
+<text x="590" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#5B21B6" letter-spacing="0.08em">GOVERNANCE</text>
+<rect x="535" y="42" width="110" height="42" rx="6" fill="#FAF5FF" stroke="#C4B5FD" stroke-width="1"/><text x="590" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">Purview</text><text x="590" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#7C3AED">Metadata</text>
+<rect x="535" y="94" width="110" height="42" rx="6" fill="#FAF5FF" stroke="#C4B5FD" stroke-width="1"/><text x="590" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#5B21B6">Unity Catalog</text><text x="590" y="128" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#7C3AED">RBAC/RLS</text>
+<rect x="535" y="146" width="110" height="36" rx="6" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1"/><text x="590" y="169" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#92400E">Key Vault</text>
+<rect x="535" y="192" width="110" height="36" rx="6" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1"/><text x="590" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#92400E">Defender</text>
+<rect x="670" y="10" width="150" height="280" rx="10" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+<text x="745" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#065F46" letter-spacing="0.08em">REPORTING</text>
+<rect x="680" y="42" width="130" height="48" rx="6" fill="#F59E0B"/><text x="745" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#fff">Power BI</text><text x="745" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="rgba(255,255,255,0.9)">35+ dashboards</text>
+<rect x="680" y="100" width="130" height="48" rx="6" fill="#1F6FEB"/><text x="745" y="120" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#fff">Tableau</text><text x="745" y="136" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="rgba(255,255,255,0.9)">Real-time KPIs</text>
+<rect x="680" y="158" width="130" height="48" rx="6" fill="#7C3AED"/><text x="745" y="178" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#fff">Claude AI</text><text x="745" y="194" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="rgba(255,255,255,0.9)">+ Genie NLP</text>
+<rect x="680" y="218" width="130" height="32" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/><text x="745" y="239" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#065F46">Self-serve via NL</text>
+<line x1="120" y1="140" x2="153" y2="120" stroke="#1A3A5C" stroke-width="1.5" marker-end="url(#b1)" fill="none"/>
+<line x1="265" y1="82" x2="290" y2="82" stroke="#0F7E6B" stroke-width="1.5" marker-end="url(#b2)" fill="none"/>
+<line x1="510" y1="140" x2="533" y2="140" stroke="#7C3AED" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+<line x1="498" y1="82" x2="678" y2="120" stroke="#0F7E6B" stroke-width="1.5" marker-end="url(#b2)" fill="none"/>
+<rect x="10" y="305" width="810" height="55" rx="8" fill="rgba(0,0,0,0.02)" stroke="#E5E7EB" stroke-width="0.5"/>
+<text x="25" y="323" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#6B7280" letter-spacing="0.08em">IMPACT</text>
+<text x="25" y="340" font-family="Inter,sans-serif" font-size="10" fill="#6B7280">▸ 50+ Alteryx → Databricks: 40% faster, 30% cheaper    ▸ 30+ pipelines, 9 factories → 95% reliability    ▸ RBAC/RLS → 70% less unauthorized access</text>
+          </svg>
+        </div></div></div>
+      </div>
+
+      <div class="highlights-section">
+        <div class="arch-toggle-label" style="margin-bottom:16px;padding:0;">Key Contributions</div>
+        <div class="highlights-grid">
+          <div class="highlight-item"><div class="highlight-dot" style="background:var(--amber)"></div><div class="highlight-text"><strong>Platform Migration</strong> — 50+ Alteryx workflows to Databricks, 40% faster reports, 30% lower costs.</div></div>
+          <div class="highlight-item"><div class="highlight-dot" style="background:var(--amber)"></div><div class="highlight-text"><strong>30+ Ingestion Pipelines</strong> — 9 factories, incremental loads, ADF orchestration, 95% reliability.</div></div>
+          <div class="highlight-item"><div class="highlight-dot" style="background:var(--amber)"></div><div class="highlight-text"><strong>Governance Framework</strong> — RBAC + RLS/CLS, 70% reduction in unauthorized access.</div></div>
+          <div class="highlight-item"><div class="highlight-dot" style="background:var(--amber)"></div><div class="highlight-text"><strong>Data Quality</strong> — 99%+ accuracy, 60% fewer anomalies across 30+ pipelines.</div></div>
+          <div class="highlight-item"><div class="highlight-dot" style="background:var(--amber)"></div><div class="highlight-text"><strong>Gen AI Integration</strong> — Claude AI + Databricks Genie for natural language KPI self-service.</div></div>
+          <div class="highlight-item"><div class="highlight-dot" style="background:var(--amber)"></div><div class="highlight-text"><strong>Historical Tracking</strong> — SCD1/SCD2 via dbt, 35+ Tableau dashboards for real-time KPIs.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SKILLS (Code 2 groups + Code 1 purple pills for AI) ==================== -->
+<section id="skills">
+  <div class="container">
+    <p class="section-eyebrow reveal">Expertise</p>
+    <h2 class="section-title reveal" style="--stagger:0.08s">Technical Skills</h2>
+    <div class="skills-grid reveal" style="--stagger:0.16s">
+      <div class="skill-group"><div class="skill-group-title" style="color:var(--teal)">Cloud &amp; Data Platforms</div><div class="skill-tags"><span class="skill-tag">Azure Databricks</span><span class="skill-tag">Azure Data Factory</span><span class="skill-tag">Delta Lake</span><span class="skill-tag">ADLS Gen2</span><span class="skill-tag">Azure SQL</span><span class="skill-tag">Key Vault</span></div></div>
+      <div class="skill-group"><div class="skill-group-title" style="color:var(--teal)">Processing &amp; Logic</div><div class="skill-tags"><span class="skill-tag">PySpark</span><span class="skill-tag">Python</span><span class="skill-tag">SQL</span><span class="skill-tag">SparkSQL</span><span class="skill-tag">Pandas</span><span class="skill-tag">dbt</span></div></div>
+      <div class="skill-group"><div class="skill-group-title" style="color:var(--amber)">Security &amp; Governance</div><div class="skill-tags"><span class="skill-tag">Unity Catalog</span><span class="skill-tag">RBAC</span><span class="skill-tag">ABAC</span><span class="skill-tag">RLS/CLS</span><span class="skill-tag">Data Masking</span><span class="skill-tag">Purview</span></div></div>
+      <!-- Code 1's purple pill tags for AI category -->
+      <div class="skill-group"><div class="skill-group-title" style="color:var(--purple)">AI &amp; Architecture</div><div class="skill-tags"><span class="skill-tag skill-tag--pill">Medallion Architecture</span><span class="skill-tag skill-tag--pill">Gen AI Integration</span><span class="skill-tag skill-tag--pill">Databricks Genie</span><span class="skill-tag skill-tag--pill">Claude AI</span><span class="skill-tag skill-tag--pill">Power BI</span><span class="skill-tag skill-tag--pill">Tableau</span></div></div>
+      <div class="skill-group"><div class="skill-group-title" style="color:var(--rose)">Data Engineering</div><div class="skill-tags"><span class="skill-tag">ETL/ELT Pipelines</span><span class="skill-tag">SCD1/SCD2</span><span class="skill-tag">Incremental Loading</span><span class="skill-tag">REST APIs</span><span class="skill-tag">OAuth2</span></div></div>
+      <div class="skill-group"><div class="skill-group-title" style="color:var(--teal)">Tools &amp; Integration</div><div class="skill-tags"><span class="skill-tag">Git</span><span class="skill-tag">Azure DevOps</span><span class="skill-tag">CI/CD</span><span class="skill-tag">SAP ERP</span><span class="skill-tag">SharePoint</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CERTIFICATIONS ==================== -->
+<section id="certifications" style="background:var(--ink-2);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);">
+  <div class="container">
+    <p class="section-eyebrow reveal">Credentials</p>
+    <h2 class="section-title reveal" style="--stagger:0.08s">Certifications &amp; Education</h2>
+    <div class="cert-list reveal" style="--stagger:0.16s">
+      <div class="cert-item"><div class="cert-icon" style="background:linear-gradient(135deg,#1A3A5C,#2B8FD4);">MS</div><div><div class="cert-name">DP-700 Fabric Data Engineer Associate</div><div class="cert-meta">Microsoft Certified · 2025</div></div></div>
+      <div class="cert-item"><div class="cert-icon" style="background:linear-gradient(135deg,#FF3621,#FF6B3B);">DB</div><div><div class="cert-name">Databricks Certified Associate Data Engineer</div><div class="cert-meta">In progress · Databricks</div></div></div>
+      <div class="cert-item"><div class="cert-icon" style="background:linear-gradient(135deg,#FF3621,#FF6B3B);">DB</div><div><div class="cert-name">Associate Data Engineering — Learning Festival</div><div class="cert-meta">Databricks · 2024</div></div></div>
+      <div class="cert-item"><div class="cert-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706);">dbt</div><div><div class="cert-name">dbt Fundamentals + Databricks Lakehouse</div><div class="cert-meta">Academic Certifications</div></div></div>
+      <div class="cert-item"><div class="cert-icon" style="background:linear-gradient(135deg,#0F2744,#1A3A5C);">GE</div><div><div class="cert-name">B.Tech — Computer Science</div><div class="cert-meta">Graphic Era Hill University · CGPA 8.54 · 2020–2024</div></div></div>
+      <div class="cert-item"><div class="cert-icon" style="background:linear-gradient(135deg,#E05B3B,#B91C1C);">YT</div><div><div class="cert-name">CodeThurst — YouTube Channel</div><div class="cert-meta">1,600+ subscribers · Coding &amp; DSA</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CONTACT ==================== -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    <p class="section-eyebrow reveal">Get in touch</p>
+    <div class="contact-card reveal" style="--stagger:0.1s">
+      <h2 class="contact-headline">Got a pipeline that needs <em>fixing</em>?</h2>
+      <p class="contact-sub">I'm always happy to talk data architecture, governance, or the next migration headache. Reach out — I read every message.</p>
+      <div class="footer-links">
+        <a href="mailto:vishal.ansari998877@gmail.com" class="footer-link is-primary">Email Me ↗</a>
+        <a href="https://www.linkedin.com/in/" class="footer-link" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://github.com/" class="footer-link" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://leetcode.com/" class="footer-link" target="_blank" rel="noopener">LeetCode ↗</a>
+        <a href="https://www.youtube.com/" class="footer-link" target="_blank" rel="noopener">YouTube ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-end">vishal.ansari998877@gmail.com · +91 7088685960 · Chennai, IN</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ===== CURSOR ===== */
+  var dot = document.querySelector('.cursor-dot');
+  var ring = document.querySelector('.cursor-ring');
+  var mx = -100, my = -100, rx = -100, ry = -100;
+  var hoverEls = 'a,button,.pipe-node,.filter-chip,.skill-tag,.tech-tag,.highlight-item,.cert-item,.skill-group,.stat-card,.arch-toggle,.arch-node';
+  document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; dot.style.left = mx+'px'; dot.style.top = my+'px'; });
+  document.addEventListener('mouseover', function(e) { if(e.target.closest(hoverEls)){dot.classList.add('is-hover');ring.classList.add('is-hover');} });
+  document.addEventListener('mouseout', function(e) { if(e.target.closest(hoverEls)){dot.classList.remove('is-hover');ring.classList.remove('is-hover');} });
+  (function loop(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
+
+  /* ===== TYPEWRITER ===== */
+  var phrases = [
+    'Building data pipelines that actually work at scale.',
+    'Architecting Medallion pipelines on Azure & Databricks.',
+    'Turning messy sources into governed, query-ready data.',
+    'Automating enterprise HR integration end to end.'
+  ];
+  var titleEl = document.getElementById('heroTitle');
+  var pi = 0, ci = 0, del = false;
+  function tw() {
+    var cur = phrases[pi];
+    var txt = del ? cur.substring(0, ci-1) : cur.substring(0, ci+1);
+    ci = del ? ci-1 : ci+1;
+    titleEl.innerHTML = txt + '<span class="tw-cursor"></span>';
+    var spd = del ? 35 : 65;
+    if (!del && ci === cur.length) { spd = 2200; del = true; }
+    else if (del && ci === 0) { del = false; pi = (pi+1) % phrases.length; spd = 400; }
+    setTimeout(tw, spd);
+  }
+  tw();
+
+  /* ===== MOBILE MENU ===== */
+  var ham = document.getElementById('hamburger');
+  var mm = document.getElementById('mobileMenu');
+  ham.addEventListener('click', function() { var o = ham.classList.toggle('is-open'); mm.classList.toggle('is-open', o); document.body.style.overflow = o ? 'hidden' : ''; });
+  mm.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', function() { ham.classList.remove('is-open'); mm.classList.remove('is-open'); document.body.style.overflow = ''; }); });
+
+  /* ===== SCROLL SPY + SPINE ===== */
+  var secs = ['philosophy','projects','skills','certifications','contact'].map(function(id){return document.getElementById(id);});
+  var navAs = document.querySelectorAll('.nav-links a');
+  var sf = document.getElementById('spineFill');
+  function onSc() {
+    var d = document.documentElement, pct = d.scrollTop/(d.scrollHeight-d.clientHeight)*100;
+    if(sf) sf.style.height = Math.min(100,Math.max(0,pct))+'%';
+    var cur = null;
+    secs.forEach(function(s){ if(!s)return; var r=s.getBoundingClientRect(); if(r.top<=140&&r.bottom>140) cur=s.id; });
+    navAs.forEach(function(a){ a.classList.toggle('is-active', a.dataset.nav===cur); });
+  }
+  document.addEventListener('scroll', onSc, {passive:true}); onSc();
+
+  /* ===== PIPELINE ===== */
+  var sc = {
+    source:'<strong>Source —</strong> Raw records land from Dayforce HCM, MidPoint IDM, and Cornerstone LMS via REST APIs with OAuth2, 100+ events daily.',
+    bronze:'<strong>Bronze —</strong> Landing zone preserves raw payloads exactly as received, with watermark tracking and a dead-letter queue for malformed records.',
+    silver:'<strong>Silver —</strong> Schema standardisation and deduplication across all three sources, producing clean, query-ready entity tables.',
+    core:'<strong>Core / SSOT —</strong> Consolidated single source of truth with Unity Catalog ABAC masking 20+ PII fields and enforcing RBAC.',
+    writeback:'<strong>Writeback —</strong> Enriched master records POST/PATCH back to MidPoint and Cornerstone, with failed syncs auto-retried.'
+  };
+  var pns = document.querySelectorAll('#pipeTrack .pipe-node');
+  var pd = document.getElementById('pipeDetail');
+  pns.forEach(function(n) {
+    function act() { pns.forEach(function(x){x.classList.remove('is-active');}); n.classList.add('is-active'); pd.style.opacity='0'; setTimeout(function(){pd.innerHTML=sc[n.dataset.stage]||'';pd.style.opacity='1';},150); }
+    n.addEventListener('click', act);
+    n.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();act();} });
+  });
+
+  /* ===== COUNTERS ===== */
+  var cts = document.querySelectorAll('[data-count]'), done = new WeakSet();
+  function animC(el) { if(done.has(el))return; done.add(el); var t=parseInt(el.dataset.count,10),s=el.dataset.suffix||'',st=null; function step(ts){if(!st)st=ts;var p=Math.min(1,(ts-st)/1200),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*t)+s;if(p<1)requestAnimationFrame(step);} requestAnimationFrame(step); }
+  var co = new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)animC(e.target);});},{threshold:0.4});
+  cts.forEach(function(c){co.observe(c);});
+
+  /* ===== REVEAL ===== */
+  var ro = new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-visible');ro.unobserve(e.target);}});},{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+
+  /* ===== ACCORDION ===== */
+  document.querySelectorAll('.arch-toggle').forEach(function(b){ b.addEventListener('click',function(){ var s=b.closest('.arch-section'),o=s.classList.toggle('is-open'); b.setAttribute('aria-expanded',o?'true':'false'); }); });
+
+  /* ===== FILTER ===== */
+  var chips = document.querySelectorAll('.filter-chip'), cards = document.querySelectorAll('.project-card');
+  chips.forEach(function(ch) {
+    ch.addEventListener('click', function() {
+      chips.forEach(function(c){c.classList.remove('is-active');}); ch.classList.add('is-active');
+      var f = ch.dataset.filter;
+      cards.forEach(function(cd) {
+        var ts = (cd.dataset.tech||'').split(','), m = f==='all' || ts.indexOf(f)!==-1;
+        if(m) { cd.classList.remove('is-filtered-out'); cd.style.display=''; }
+        else { cd.classList.add('is-filtered-out'); setTimeout(function(){if(cd.classList.contains('is-filtered-out'))cd.style.display='none';},300); }
+      });
+      document.querySelectorAll('.tech-tag').forEach(function(tg){ tg.classList.toggle('is-match', f!=='all' && tg.textContent.trim()===f); });
+    });
+  });
+
+  /* ===== BACK TO TOP ===== */
+  var btt = document.getElementById('backToTop');
+  document.addEventListener('scroll', function(){ btt.classList.toggle('is-visible', window.scrollY>600); }, {passive:true});
+  btt.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+})();
+</script>
+</body>
+</html>
